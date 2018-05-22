@@ -44,7 +44,9 @@ An example application built using [Stripe Connect](https://stripe.com/docs/conn
 
 
 ## Specs
-Built on Rails 5 and running Ruby 2.2. Uses the 2016-07-06 API version. Update with newer API version in progress!
+Built on Rails 5 and running Ruby 2.2. Uses the 2016-07-06 API version.
+
+Update with newer API version in progress!
 
 
 ## Setup
