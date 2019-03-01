@@ -10,28 +10,27 @@ class StripeAccountsController < ApplicationController
 
     if @account.save
       begin
-        # For readability, both account creation options are shown separately
+        # There are different requirements for individuals vs companies
+        # Using separate request for each in this example
 
-        # First option: create an account with full account application info
-        if params[:full_account]
+        # If this is an individual, send request params to create an individual acct
+        if account_params[:account_type].eql?('individual')
           stripe_account = Stripe::Account.create(
-            managed: true,
-            legal_entity: {
+            type: 'custom',
+            requested_capabilities: ['platform_payments'], # Donors interact with the platform
+            business_type: 'individual',
+            individual: {
               first_name: account_params[:first_name].capitalize,
               last_name: account_params[:last_name].capitalize,
-              type: account_params[:account_type],
               dob: {
                 day: account_params[:dob_day],
                 month: account_params[:dob_month],
-                year: account_params[:dob_year]
+                year: account_params[:dob_year],
               },
-              address: {
-                line1: account_params[:address_line1],
-                city: account_params[:address_city],
-                state: account_params[:address_state],
-                postal_code: account_params[:address_postal]
-              },
-              ssn_last_4: account_params[:ssn_last_4]
+              ssn_last_4: account_params[:ssn_last_4],
+            },
+            business_profile: {
+              product_description: 'Fundraising campaign',
             },
             tos_acceptance: {
               date: Time.now.to_i,
@@ -39,19 +38,18 @@ class StripeAccountsController < ApplicationController
             }
           )
 
-        # Second option: create an account with incremental info
+        # If the account type is a company, send company information
         else
           stripe_account = Stripe::Account.create(
-            managed: true,
-            legal_entity: {
-              first_name: account_params[:first_name].capitalize,
-              last_name: account_params[:last_name].capitalize,
-              type: account_params[:account_type],
-              dob: {
-                day: account_params[:dob_day],
-                month: account_params[:dob_month],
-                year: account_params[:dob_year]
-              }
+            type: 'custom',
+            requested_capabilities: ['platform_payments'], # Donors interact with the platform
+            business_type: 'company',
+            company: {
+              name: account_params[:business_name],
+              tax_id: account_params[:business_tax_id],
+            },
+            business_profile: {
+              product_description: 'Fundraising campaign',
             },
             tos_acceptance: {
               date: Time.now.to_i,
@@ -60,25 +58,18 @@ class StripeAccountsController < ApplicationController
           )
         end
 
-      # If this is a business, update with these values
-      if account_params[:account_type].eql?('company')
-        stripe_account.legal_entity.business_name = account_params[:business_name]
-        stripe_account.legal_entity.business_tax_id = account_params[:business_tax_id]
-        stripe_account.save
-      end
+        # Save the account ID for this user for later
+        @account.acct_id = stripe_account.id
+        @account.save
+        current_user.stripe_account = stripe_account.id
 
-      # Save the account ID for this user for later
-      @account.acct_id = stripe_account.id
-      @account.save
-      current_user.stripe_account = stripe_account.id
-
-      if current_user.save
-        flash[:success] = "Your account has been created!
-          Next, add a bank account where you'd like to receive transfers below."
-        redirect_to new_bank_account_path
-      else
-        handle_error("Sorry, we weren't able to create this account.", 'new')
-      end
+        if current_user.save
+          flash[:success] = "Your account has been created!
+            Next, add a bank account where you'd like to receive transfers below."
+          redirect_to new_bank_account_path
+        else
+          handle_error("Sorry, we weren't able to create this account.", 'new')
+        end
 
       # Handle exceptions from Stripe
       rescue Stripe::StripeError => e

@@ -16,7 +16,7 @@ class ActiveSupport::TestCase
   # Create a US bank token
   def create_bank_token
     @btok = Stripe::Token.create(
-      bank_account: { 
+      bank_account: {
         country: "US",
         currency: "usd",
         routing_number: "110000000",
@@ -27,6 +27,21 @@ class ActiveSupport::TestCase
 
   # Create a Stripe account to use for tests
   def create_stripe_account
-    @stripe_account = Stripe::Account.create(managed: true, country: "us")
+    @stripe_account = Stripe::Account.create(
+      type: 'custom',
+      requested_capabilities: ['platform_payments'], # Donors interact with the platform
+      business_type: 'company',
+      company: {
+        name: 'Snookies Cookies',
+        tax_id: '000000000',
+      },
+      business_profile: {
+        product_description: 'Fundraising campaign',
+      },
+      tos_acceptance: {
+        date: Time.now.to_i,
+        ip: '1.2.3.4'
+      },
+    )
   end
 end
