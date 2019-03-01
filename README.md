@@ -14,9 +14,9 @@ An example application built using [Stripe Connect](https://stripe.com/docs/conn
 
 
 ## Features
-:lock: Uses [Devise](https://github.com/plataformatec/devise) for user authentication.
-
 :money_with_wings: Create fundraising campaigns and custom Stripe Connect accounts.
+
+:lock: Uses [Devise](https://github.com/plataformatec/devise) for user authentication.
 
 :chart_with_upwards_trend: Fairly complete seller dashboard to view charges, create refunds, view payouts, etc.
 
@@ -44,9 +44,7 @@ An example application built using [Stripe Connect](https://stripe.com/docs/conn
 
 
 ## Specs
-Built on Rails 5 and running Ruby 2.2. Uses the 2016-07-06 API version.
-
-Update with newer API version in progress!
+Built on Rails 5 and running Ruby 2.2. Uses the 2019-02-19 API version, which includes [major chages](https://stripe.com/docs/upgrades#2019-02-19) to the way Connect onboarding works.
 
 
 ## Setup
