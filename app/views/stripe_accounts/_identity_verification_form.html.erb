@@ -1,7 +1,7 @@
 <div class="panel panel-default topspace-lg">
   <div class="panel-body">
     <%= form_for @account, url: stripe_account_path(@stripe_account.id), html: { method: "patch" }  do | f | %>
-      <% if @stripe_account.verification.fields_needed.find { |e| /address/ =~ e } %>
+      <% if @stripe_account.requirements.eventually_due.find { |e| /address/ =~ e } %>
         <div class="row">
           <div class="col-md-12">
             <div class="form-group">
@@ -33,7 +33,7 @@
         </div>
         <hr>
       <% end %>
-      <% if @stripe_account.verification.fields_needed.include?('legal_entity.type') %>
+      <% if @stripe_account.requirements.eventually_due.include?('business_type') %>
         <div class="row">
           <div class="col-md-12">
             <div class="form-group">
@@ -43,7 +43,7 @@
           </div>
         </div>
       <% end %>
-      <% if @stripe_account.verification.fields_needed.find { |e| /name/ =~ e } %>
+      <% if @stripe_account.requirements.eventually_due.find { |e| /name/ =~ e } %>
         <div class="row">
           <div class="col-md-6">
             <div class="form-group">
@@ -59,7 +59,7 @@
           </div>
         </div>
       <% end %>
-      <% if @stripe_account.verification.fields_needed.find { |e| /dob/ =~ e } %>
+      <% if @stripe_account.requirements.eventually_due.find { |e| /dob/ =~ e } %>
         <div class="row">
           <div class="col-md-4">
             <div class="form-group">
@@ -82,7 +82,7 @@
         </div>
         <hr>
       <% end %>
-      <% if @stripe_account.verification.fields_needed.include?('legal_entity.business_name') %>
+      <% if @stripe_account.requirements.eventually_due.include?('company.name') %>
         <div class="row">
           <div class="col-md-12">
             <div class="form-group">
@@ -92,7 +92,7 @@
           </div>
         </div>
       <% end %>
-      <% if @stripe_account.verification.fields_needed.include?('legal_entity.business_tax_id') %>
+      <% if @stripe_account.requirements.eventually_due.include?('company.tax_id') %>
         <div class="row">
           <div class="col-md-12">
             <div class="form-group">
@@ -102,7 +102,7 @@
           </div>
         </div>
       <% end %>
-      <% if @stripe_account.verification.fields_needed.include?('legal_entity.ssn_last_4') %>
+      <% if @stripe_account.requirements.eventually_due.include?('individual.ssn_last_4') %>
         <div class="row">
           <div class="col-md-12">
             <div class="form-group">
@@ -112,7 +112,7 @@
           </div>
         </div>
       <% end %>
-      <% if @stripe_account.verification.fields_needed.include?('legal_entity.personal_id_number') %>
+      <% if @stripe_account.requirements.eventually_due.include?('individual.id_number') %>
         <div class="row">
           <div class="col-md-12">
             <div class="form-group">
@@ -123,7 +123,7 @@
           </div>
         </div>
       <% end %>
-      <% if @stripe_account.verification.fields_needed.include?('legal_entity.verification.document') %>
+      <% if @stripe_account.requirements.eventually_due.include?('individual.verification.document') %>
         <div class="row">
           <div class="col-md-12">
             <div class="form-group">

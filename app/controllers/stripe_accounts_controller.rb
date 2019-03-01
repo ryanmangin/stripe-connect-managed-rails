@@ -98,16 +98,10 @@ class StripeAccountsController < ApplicationController
     # Retrieve the local account details
     @account = StripeAccount.find_by(acct_id: params[:id])
 
-    if @stripe_account.verification.fields_needed.empty?
+    if @stripe_account.requirements.currently_due.empty?
       flash[:success] = "Your information is all up to date."
       redirect_to dashboard_path and return
     end
-  end
-
-  # Custom action for full account info collection
-  def full
-    @account = StripeAccount.new
-    @full_account = true
   end
 
   def update
@@ -132,40 +126,40 @@ class StripeAccountsController < ApplicationController
       end
 
       # Iterate through each field needed
-      @stripe_account.verification.fields_needed.each do |field|
+      @stripe_account.requirements.eventually_due.each do |field|
 
         # Update each needed attribute
         case field
-        when 'legal_entity.address.city'
-          @stripe_account.legal_entity.address.city = account_params[:address_city]
-        when 'legal_entity.address.line1'
-          @stripe_account.legal_entity.address.line1 = account_params[:address_line1]
-        when 'legal_entity.address.postal_code'
-          @stripe_account.legal_entity.address.postal_code = account_params[:address_postal]
-        when 'legal_entity.address.state'
-          @stripe_account.legal_entity.address.state = account_params[:address_state]
-        when 'legal_entity.dob.day'
-          @stripe_account.legal_entity.dob.day = account_params[:dob_day]
-        when 'legal_entity.dob.month'
-          @stripe_account.legal_entity.dob.month = account_params[:dob_month]
-        when 'legal_entity.dob.year'
-          @stripe_account.legal_entity.dob.year = account_params[:dob_year]
-        when 'legal_entity.first_name'
-          @stripe_account.legal_entity.first_name = account_params[:first_name]
-        when 'legal_entity.last_name'
-          @stripe_account.legal_entity.last_name = account_params[:last_name]
-        when 'legal_entity.ssn_last_4'
-          @stripe_account.legal_entity.ssn_last_4 = account_params[:ssn_last_4]
-        when 'legal_entity.type'
-          @stripe_account.legal_entity.type = account_params[:type]
-        when 'legal_entity.personal_id_number'
-          @stripe_account.legal_entity.personal_id_number = account_params[:personal_id_number]
-        when 'legal_entity.verification.document'
-          @stripe_account.legal_entity.verification.document = account_params[:verification_document]
-        when 'legal_entity.business_name'
-          @stripe_account.legal_entity.business_name = account_params[:business_name]
-        when 'legal_entity.business_tax_id'
-          @stripe_account.legal_entity.business_tax_id = account_params[:business_tax_id]
+        when 'individual.address.city'
+          @stripe_account.individual.address.city = account_params[:address_city]
+        when 'individual.address.line1'
+          @stripe_account.individual.address.line1 = account_params[:address_line1]
+        when 'individual.address.postal_code'
+          @stripe_account.individual.address.postal_code = account_params[:address_postal]
+        when 'individual.address.state'
+          @stripe_account.individual.address.state = account_params[:address_state]
+        when 'individual.dob.day'
+          @stripe_account.individual.dob.day = account_params[:dob_day]
+        when 'individual.dob.month'
+          @stripe_account.individual.dob.month = account_params[:dob_month]
+        when 'individual.dob.year'
+          @stripe_account.individual.dob.year = account_params[:dob_year]
+        when 'individual.first_name'
+          @stripe_account.individual.first_name = account_params[:first_name]
+        when 'individual.last_name'
+          @stripe_account.individual.last_name = account_params[:last_name]
+        when 'individual.ssn_last_4'
+          @stripe_account.individual.ssn_last_4 = account_params[:ssn_last_4]
+        when 'business_type'
+          @stripe_account.business_type = account_params[:type]
+        when 'individual.id_number'
+          @stripe_account.individual.id_number = account_params[:personal_id_number]
+        when 'individual.verification.document'
+          @stripe_account.individual.verification.document.front = account_params[:verification_document]
+        when 'company.name'
+          @stripe_account.company.name = account_params[:business_name]
+        when 'company.tax_id'
+          @stripe_account.company.tax_id = account_params[:business_tax_id]
         end
       end
 

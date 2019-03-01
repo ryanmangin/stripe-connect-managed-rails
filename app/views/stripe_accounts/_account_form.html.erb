@@ -41,17 +41,14 @@
           </div>
         </div>
       </div>
-      <% if @full_account %>
-        <div class="row">
-          <div class="col-md-6">
-            <div class="form-group">
-              <%= f.label :ssn_last_4, "Last 4 digits of your SSN" %>
-              <%= f.text_field :ssn_last_4, class: "form-control input-lg", placeholder: "6789" %>
-            </div>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <%= f.label :ssn_last_4, "Last 4 digits of your SSN" %>
+            <%= f.text_field :ssn_last_4, class: "form-control input-lg", placeholder: "6789" %>
           </div>
         </div>
-        <%= hidden_field_tag :full_account, value: "true" %>
-      <% end %>
+      </div>
       <hr>
       <div class="row">
         <div class="col-md-4">
@@ -74,37 +71,6 @@
         </div>
       </div>
       <hr>
-      <% if @full_account %>
-        <div class="row">
-          <div class="col-md-12">
-            <div class="form-group">
-              <%= f.label :address_line1, "Street address" %>
-              <%= f.text_field :address_line1, class: "form-control input-lg", placeholder: "185 Berry St" %>
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-md-4">
-            <div class="form-group">
-              <%= f.label :address_city, "City" %>
-              <%= f.text_field :address_city, class: "form-control input-lg", placeholder: "San Francisco" %>
-            </div>
-          </div>
-          <div class="col-md-4">
-            <div class="form-group">
-              <%= f.label :address_state, "State" %>
-              <%= f.select(:address_state, options_for_select(states, @account[:address_state]), {}, { class: "form-control input-lg" }) %>
-            </div>
-          </div>
-          <div class="col-md-4">
-            <div class="form-group">
-              <%= f.label :address_postal, "Zip" %>
-              <%= f.text_field :address_postal, class: "form-control input-lg", placeholder: "90210" %>
-            </div>
-          </div>
-        </div>
-        <hr>
-      <% end %>
       <div class="row">
         <div class="col-md-12">
           <div class="form-group">
@@ -129,10 +95,10 @@
   $(function(){
     $('#stripe_account_account_type').change(function(){
       if($('#stripe_account_account_type').val() == 'company'){
-          $('.business-row').removeClass('hidden'); 
+          $('.business-row').removeClass('hidden');
         } else {
-          $('.business-row').addClass('hidden'); 
-        } 
+          $('.business-row').addClass('hidden');
+        }
     });
   });
 </script>
